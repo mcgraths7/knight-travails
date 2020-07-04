@@ -1,29 +1,12 @@
 module Searchable
-    def dfs(target = nil, &prc)
-    raise "Need proc or target" if [target, prc].none?
-    prc ||= Proc.new { |node| node.value == target }
-    return self if prc.call(self)
-    children.each do |child|
-      result = child.dfs(&prc)
-      return result unless result.nil?
+    def dfs(target = nil)
+      return self if target == self.value
+      children.each do |child|
+        result = child.dfs(target)
+        return result unless result.nil?
+      end
+      nil
     end
-    nil
-  end
-
-  def bfs(target = nil, &prc)
-    raise "Need a proc or target" if [target, prc].none?
-    prc ||= Proc.new { |node| node.value == target }
-
-    nodes = [self]
-    until nodes.empty?
-      node = nodes.shift
-
-      return node if prc.call(node)
-      nodes.concat(node.children)
-    end
-
-    nil
-  end
 end
 
 class PolyTreeNode
